@@ -3,7 +3,9 @@ module.exports = function(grunt) {
   grunt.initConfig({
     pkg: grunt.file.readJSON('package.json'),
     concat: {
-      //your code here
+      files: {
+        'public/dist/concatenated.js' : ['public/client/**/*.js']
+      }
     },
 
     mochaTest: {
@@ -23,11 +25,15 @@ module.exports = function(grunt) {
 
     uglify: {
       //your code here
+      files: {
+        'public/dist/concatenated.min.js' : ['public/dist/concatenated.js']
+      }
     },
 
     jshint: {
       files: [
         // Add filespec list here
+        'public/client/**/*.js'
       ],
       options: {
         force: 'true',
@@ -41,6 +47,9 @@ module.exports = function(grunt) {
 
     cssmin: {
       //your code here
+      files: {
+        'public/dist/style.min.css' : ['public/client/**/*.css']
+      }
     },
 
     watch: {
@@ -60,14 +69,22 @@ module.exports = function(grunt) {
       },
       server: {
         //your code here
+        files: [
+        'app/*.js',
+        'app/**/*.js',
+        'server-config.js',
+        'lib/*.js'
+        ],
+        tasks: ['mochaTest']
       }
     },
 
     shell: {
       prodServer: {
         //can be used to auto-deploy to Heroku/Azure.
+        command: ['git add .', 'git commit -m "' + new Date() + '"', 'git push heroku master'].join('&&')
       }
-    },
+    }
   });
 
   grunt.loadNpmTasks('grunt-contrib-uglify');
@@ -97,12 +114,14 @@ module.exports = function(grunt) {
   ////////////////////////////////////////////////////
 
   grunt.registerTask('test', [
+    'jshint',
     'mochaTest'
     //your code here
   ]);
 
   grunt.registerTask('build', [
     //your code here
+    'concat', 'uglify', 'cssmin'
   ]);
 
   //can be used to auto-deploy.
@@ -110,6 +129,7 @@ module.exports = function(grunt) {
     //Grunt options are ways to customize tasks.  Research ways to use them.
     if(grunt.option('prod')) {
       // add your production server task here
+      grunt.task.run([ 'shell:prodServer' ])
     } else {
       grunt.task.run([ 'server-dev' ]);
     }
@@ -117,6 +137,9 @@ module.exports = function(grunt) {
 
   grunt.registerTask('deploy', [
     // add your deploy tasks here
+    'test',
+    'build',
+    'upload'
   ]);
 
 
