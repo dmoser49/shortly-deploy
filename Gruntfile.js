@@ -3,15 +3,20 @@ module.exports = function(grunt) {
   grunt.initConfig({
     pkg: grunt.file.readJSON('package.json'),
     concat: {
-      files: {
-        'public/dist/concatenated.js' : ['public/client/**/*.js']
+      options: {
+        separator: ';',
+      },
+      dist: {
+        src : ['public/client/**/*.js'],
+        dest: 'public/dist/concatenated.js',
       }
     },
 
     mochaTest: {
       test: {
         options: {
-          reporter: 'spec' //nyan, xunit, html-cov, dot, min, markdown
+          reporter: 'spec', //nyan, xunit, html-cov, dot, min, markdown
+          bail: true,
         },
         src: ['test/**/*.js']
       }
@@ -25,15 +30,19 @@ module.exports = function(grunt) {
 
     uglify: {
       //your code here
-      files: {
-        'public/dist/concatenated.min.js' : ['public/dist/concatenated.js']
+      options: {
+        separator: ';',
+      },
+      dist: {
+        src : ['public/dist/concatenated.js'],
+        dest: 'public/dist/concatenated.min.js',
       }
     },
 
     jshint: {
       files: [
         // Add filespec list here
-        'public/client/**/*.js'
+        'public/client/**/*.js', 'public/dist/*.js'
       ],
       options: {
         force: 'true',
@@ -47,8 +56,12 @@ module.exports = function(grunt) {
 
     cssmin: {
       //your code here
-      files: {
-        'public/dist/style.min.css' : ['public/client/**/*.css']
+      options: {
+        separator: ';',
+      },
+      dist: {
+        src : ['public/**/*.css'],
+        dest: 'public/dist/style.min.css',
       }
     },
 

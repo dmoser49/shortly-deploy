@@ -40,3 +40,7 @@ node_modules
 
 ### PhPStorm ###
 .idea/
+
+!public/dist
+!server-config.js
+!server.js
